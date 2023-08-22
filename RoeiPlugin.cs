@@ -4,13 +4,11 @@ using System;
 
 namespace Oxide.Plugins 
 {
-    namespace RoeiPluginCnfg.ConfigData
-    {
 
-        [Info("RoeiPlugin", "Roei", "0.0.1")]
-        class RoeiPlugin : RustPlugin
+        [Info("RoeiPlugin", "Roei", "0.0.2")]
+        class RoeiPlugin : RoeiPluginCnfg
         {
-
+            public RoeiPluginCnfg Rpc = new RoeiPlugin();
             public bool ConsoleLog = true;
 
             [ChatCommand("Ping")]
@@ -18,10 +16,10 @@ namespace Oxide.Plugins
             {
                 SendReply(player, "Pong");
             }
-            [ChatCommand("Pong")]
+            [ChatCommand("Clan Create")]
             void Pong(BasePlayer player)
             {
-                SendReply(player, "Ping");
+                SendReply(player, "clan Created");
             }
 
             [ConsoleCommand("Test")]
@@ -33,7 +31,7 @@ namespace Oxide.Plugins
                     Puts($"{!ConsoleLog} hase been changed to {ConsoleLog}");
                     ConsoleLog = true;
                     Puts($"{!ConsoleLog} hase been changed to {ConsoleLog}");
-                    Puts(RoeiPluginCnfg.ConfigData.ConsoleMsg);
+                    Puts(Roei.ConfigData.ConsoleMsg);
                 }
 
             }
@@ -41,7 +39,7 @@ namespace Oxide.Plugins
             [ConsoleCommand("Repo")]
             void Repo(ConsoleSystem.Arg arg)
             {
-                Puts(RoeiPluginCnfg.ConfigData.ConsoleMsg);
+                Puts(ConsoleMsg);
             }
 
             void Init()
@@ -49,5 +47,72 @@ namespace Oxide.Plugins
                 Puts("Server Online");
             }
         }
+}
+namespace Oxide.Plugins
+{
+    [Info("RoeiConfig", "Roei", "0.0.2")]
+    public class RoeiPluginCnfg : RustPlugin
+    {
+        
+        public ConfigData configData { get; set; }
+
+        public class ConfigData{
+
+            public string ConsoleMsg = "Hi";            
+
+        }
+
+
+        private bool LoadConfigVars()
+        {
+            try
+            {
+                configData = Config.ReadObject<ConfigData>();
+            } catch{
+                return false;
+            }
+            SaveConfig(configData);
+            return true;
+
+        }
+
+        void Init(){
+
+            if(!LoadConfigVars()){
+                Puts("Error found in the config file please delete the file or check the syntax and try to fix it");
+                return;
+            }
+            if(!GenerateCnfg()){
+                configData = new ConfigData();
+                SaveConfig(configData);
+            }
+        }
+        private bool GenerateCnfg()
+        {
+
+            try
+            {
+                configData = Config.ReadObject<ConfigData>();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+
+        }
+        public void SaveConfig(ConfigData config)
+        {
+            Config.WriteObject(config, true);
+        }
+
+        [ConsoleCommand("Cnfgtest")]
+        void CnfgTest(ConsoleSystem.Arg args)
+        {
+            Puts(ConfigData.ConsoleMsg);
+
+        }
+
+
     }
 }
