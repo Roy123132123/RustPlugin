@@ -4,13 +4,13 @@ using System;
 
 namespace Oxide.Plugins 
 {
-
+        //sets info for the plugin
         [Info("RoeiPlugin", "Roei", "0.0.2")]
         class RoeiPlugin : RoeiPluginCnfg
         {
             public RoeiPluginCnfg Rpc = new RoeiPlugin();
             public bool ConsoleLog = true;
-
+            //creates a chat command with a base reply
             [ChatCommand("Ping")]
             void Ping(BasePlayer player)
             {
@@ -42,6 +42,7 @@ namespace Oxide.Plugins
                 Puts(ConsoleMsg);
             }
 
+        //init runs as soon as server is online and people can join
             void Init()
             {
                 Puts("Server Online");
@@ -53,7 +54,8 @@ namespace Oxide.Plugins
     [Info("RoeiConfig", "Roei", "0.0.2")]
     public class RoeiPluginCnfg : RustPlugin
     {
-        
+
+       //creates a new data type to save all the data in the config class 
         public ConfigData configData { get; set; }
 
         public class ConfigData{
@@ -62,7 +64,7 @@ namespace Oxide.Plugins
 
         }
 
-
+        
         private bool LoadConfigVars()
         {
             try
@@ -87,6 +89,7 @@ namespace Oxide.Plugins
                 SaveConfig(configData);
             }
         }
+        //tries to read the config data class if it cant it creates a new one in the if statement above
         private bool GenerateCnfg()
         {
 
